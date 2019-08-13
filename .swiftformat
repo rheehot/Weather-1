@@ -1,0 +1,4 @@
+--self insert
+--ifdef no-indent
+
+--exclude vendor
