@@ -10,17 +10,6 @@ import CoreData
 import os
 import UIKit
 
-class MainViewController: UIViewController {
-    override func loadView() {
-        let view = UIView()
-        self.view = view
-        view.backgroundColor = UIColor(red: .random(in: 0.0 ... 1.0),
-                                       green: .random(in: 0.0 ... 1.0),
-                                       blue: .random(in: 0.0 ... 1.0),
-                                       alpha: 1.0)
-    }
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
     var window: UIWindow?
@@ -80,6 +69,4 @@ extension AppDelegate: UIPageViewControllerDataSource {
     }
 }
 
-extension AppDelegate: UIPageViewControllerDelegate {
-    
-}
+extension AppDelegate: UIPageViewControllerDelegate {}
