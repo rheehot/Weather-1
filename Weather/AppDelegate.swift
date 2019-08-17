@@ -17,13 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         let window = UIWindow()
         self.window = window
-
-        let rootViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
-        rootViewController.setViewControllers([MainViewController()], direction: .forward, animated: false)
-        rootViewController.dataSource = self
-        rootViewController.delegate = self
-
-        window.rootViewController = rootViewController
+        window.rootViewController = MainViewController()
         window.makeKeyAndVisible()
 
         return true
@@ -58,15 +52,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
     }
 }
-
-extension AppDelegate: UIPageViewControllerDataSource {
-    func pageViewController(_: UIPageViewController, viewControllerBefore _: UIViewController) -> UIViewController? {
-        return MainViewController()
-    }
-
-    func pageViewController(_: UIPageViewController, viewControllerAfter _: UIViewController) -> UIViewController? {
-        return MainViewController()
-    }
-}
-
-extension AppDelegate: UIPageViewControllerDelegate {}
