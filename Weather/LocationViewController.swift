@@ -1,5 +1,5 @@
 //
-//  CitiesViewController.swift
+//  LocationViewController.swift
 //  Weather
 //
 //  Created by 진재명 on 8/14/19.
@@ -8,14 +8,14 @@
 
 import UIKit
 
-class CitiesViewController: UIViewController {
+class LocationViewController: UIViewController {
     override func loadView() {
         let tableView = UITableView(frame: .zero, style: .plain)
         self.view = tableView
         tableView.dataSource = self
         tableView.delegate = self
 
-        let footerView = CitiesFooterView()
+        let footerView = LocationFooterView()
         footerView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 64.0)
         tableView.tableFooterView = footerView
         footerView.addButton?.addTarget(self, action: #selector(self.addButtonPressed(_:)), for: .touchUpInside)
@@ -25,14 +25,14 @@ class CitiesViewController: UIViewController {
         assert(self.view is UITableView)
         return self.view as! UITableView
     }
-    
-    @objc func addButtonPressed(_ sender: UIButton) {
-        let viewController = UINavigationController(rootViewController: SearchViewController())
+
+    @objc func addButtonPressed(_: UIButton) {
+        let viewController = UINavigationController(rootViewController: SearchViewController(viewModel: SearchViewModel()))
         self.present(viewController, animated: true, completion: nil)
     }
 }
 
-extension CitiesViewController: UITableViewDataSource {
+extension LocationViewController: UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return 0
     }
@@ -42,4 +42,4 @@ extension CitiesViewController: UITableViewDataSource {
     }
 }
 
-extension CitiesViewController: UITableViewDelegate {}
+extension LocationViewController: UITableViewDelegate {}

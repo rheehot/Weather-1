@@ -1,5 +1,5 @@
 //
-//  CitiesFooterView.swift
+//  LocationFooterView.swift
 //  Weather
 //
 //  Created by 진재명 on 8/17/19.
@@ -8,8 +8,10 @@
 
 import UIKit
 
-class CitiesFooterView: UIView {
+class LocationFooterView: UIView {
     weak var addButton: UIButton?
+
+    weak var temperatureUnitButton: UIButton?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,7 +25,7 @@ class CitiesFooterView: UIView {
         self.addSubview(versionLabel)
         NSLayoutConstraint.activate([
             versionLabel.centerXAnchor.constraint(equalTo: self.layoutMarginsGuide.centerXAnchor),
-            self.layoutMarginsGuide.bottomAnchor.constraint(equalTo: versionLabel.bottomAnchor)
+            self.layoutMarginsGuide.bottomAnchor.constraint(equalTo: versionLabel.bottomAnchor),
         ])
 
         let addButton = UIButton(type: .system)
@@ -37,6 +39,19 @@ class CitiesFooterView: UIView {
         NSLayoutConstraint.activate([
             self.layoutMarginsGuide.trailingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 4.0),
             addButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
+        ])
+
+        let temperatureUnitButton = UIButton(type: .system)
+        self.temperatureUnitButton = temperatureUnitButton
+        temperatureUnitButton.translatesAutoresizingMaskIntoConstraints = false
+        temperatureUnitButton.setImage(UIImage(named: "cog"), for: .normal)
+        temperatureUnitButton.tintColor = UIColor(named: "GRAY6")
+
+        self.addSubview(temperatureUnitButton)
+
+        NSLayoutConstraint.activate([
+            temperatureUnitButton.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor, constant: 4.0),
+            temperatureUnitButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
         ])
     }
 

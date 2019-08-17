@@ -16,18 +16,18 @@ class MainViewController: UIViewController {
         self.view = view
         view.backgroundColor = .white
 
-        let toolbar = Toolbar()
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
-        toolbar.leftButton?.addTarget(self, action: #selector(self.settingsButtonPressed(_:)), for: .touchUpInside)
-        toolbar.rightButton?.addTarget(self, action: #selector(self.citiesButtonPressed(_:)), for: .touchUpInside)
+        let footerView = MainFooterView()
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        footerView.leftButton?.addTarget(self, action: #selector(self.settingsButtonPressed(_:)), for: .touchUpInside)
+        footerView.rightButton?.addTarget(self, action: #selector(self.citiesButtonPressed(_:)), for: .touchUpInside)
 
-        view.addSubview(toolbar)
+        view.addSubview(footerView)
 
         NSLayoutConstraint.activate([
-            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: toolbar.topAnchor, constant: 44.0),
-            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
-            view.bottomAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: 44.0),
+            footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: footerView.trailingAnchor),
+            view.bottomAnchor.constraint(equalTo: footerView.bottomAnchor),
         ])
     }
 
@@ -43,7 +43,7 @@ class MainViewController: UIViewController {
     }
 
     @objc func citiesButtonPressed(_: UIButton) {
-        let viewController = CitiesViewController()
+        let viewController = LocationViewController()
         self.present(viewController, animated: true, completion: nil)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  Toolbar.swift
+//  MainFooterView.swift
 //  Weather
 //
 //  Created by 진재명 on 8/14/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Toolbar: UIView {
+class MainFooterView: UIView {
     weak var pageControl: UIPageControl?
 
     weak var leftButton: UIButton?
