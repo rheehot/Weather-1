@@ -6,40 +6,60 @@
 //  Copyright © 2019 Jaemyeong Jin. All rights reserved.
 //
 
+import CoreData
 import Foundation
 import MapKit
+import os
 
-class SearchViewModel: NSObject {
-    static let errorOccurredNotification = Notification.Name(rawValue: "SearchViewModel.errorOccurredNotification")
+class SearchViewModel {
+    private let locationSearchManager = LocationSearchManager()
 
-    static let errorUserInfoKey = "SearchViewModel.errorUserInfoKey"
+    private let managedObjectContext: NSManagedObjectContext
 
-    private let localSearchCompleter = MKLocalSearchCompleter()
+    var results: [SearchItemTableViewCellViewModel] = []
 
-    @objc dynamic var results: [SearchItemTableViewCellViewModel] = []
-
-    override init() {
-        super.init()
-
-        self.localSearchCompleter.delegate = self
+    init(managedObjectContext: NSManagedObjectContext) {
+        self.managedObjectContext = managedObjectContext
     }
 
-    func search(query: String) {
-        guard !query.isEmpty else {
-            return
+    func search(query: String, completion: @escaping (Result<[SearchItemTableViewCellViewModel], Error>) -> Void) {
+        self.locationSearchManager.search(query: query) { [weak self] results in
+            guard let self = self else {
+                return
+            }
+
+            switch results {
+            case let .success(results):
+                let results = results.enumerated().map(SearchItemTableViewCellViewModel.init)
+                completion(.success(results))
+                self.results = results
+            case let .failure(error as NSError):
+                switch (error.domain, error.code) {
+                case (MKError.errorDomain, Int(MKError.Code.placemarkNotFound.rawValue)):
+                    let results: [SearchItemTableViewCellViewModel] = []
+                    completion(.success(results))
+                    self.results = results
+                default:
+                    completion(.failure(error))
+                }
+            }
         }
-        self.localSearchCompleter.queryFragment = query
-    }
-}
-
-extension SearchViewModel: MKLocalSearchCompleterDelegate {
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        self.results = completer.results.map { SearchItemTableViewCellViewModel(title: $0.title, subtitle: $0.subtitle) }
     }
 
-    func completer(_: MKLocalSearchCompleter, didFailWithError error: Error) {
-        NotificationCenter.default.post(name: SearchViewModel.errorOccurredNotification, object: self, userInfo: [
-            SearchViewModel.errorUserInfoKey: error,
-        ])
+    func didSelect(at indexPath: IndexPath, completion: (Result<Void, Error>) -> Void) {
+        let viewModel = self.results[indexPath.row]
+
+        let location = Location(context: self.managedObjectContext)
+        location.title = viewModel.location.title
+        location.subtitle = viewModel.location.subtitle
+        location.latitude = viewModel.location.latitude as NSNumber
+        location.longitude = viewModel.location.longitude as NSNumber
+        location.createdAt = Date()
+
+        if self.managedObjectContext.hasChanges {
+            completion(Result {
+                try self.managedObjectContext.save()
+            })
+        }
     }
 }

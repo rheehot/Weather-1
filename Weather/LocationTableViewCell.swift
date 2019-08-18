@@ -1,19 +1,19 @@
 //
-//  SearchItemTableViewCell.swift
+//  LocationTableViewCell.swift
 //  Weather
 //
-//  Created by 진재명 on 8/17/19.
+//  Created by 진재명 on 8/18/19.
 //  Copyright © 2019 Jaemyeong Jin. All rights reserved.
 //
 
 import UIKit
 
-class SearchItemTableViewCell: UITableViewCell {
+class LocationTableViewCell: UITableViewCell {
     weak var titleLabel: UILabel?
 
     weak var subtitleLabel: UILabel?
 
-    var viewModel: SearchItemTableViewCellViewModel? {
+    var viewModel: LocationTableViewCellViewModel? {
         didSet {
             self.titleLabel?.text = self.viewModel?.location.title
             self.subtitleLabel?.text = self.viewModel?.location.subtitle

@@ -18,8 +18,8 @@ class MainViewController: UIViewController {
 
         let footerView = MainFooterView()
         footerView.translatesAutoresizingMaskIntoConstraints = false
-        footerView.leftButton?.addTarget(self, action: #selector(self.settingsButtonPressed(_:)), for: .touchUpInside)
-        footerView.rightButton?.addTarget(self, action: #selector(self.citiesButtonPressed(_:)), for: .touchUpInside)
+        footerView.settingsButton?.addTarget(self, action: #selector(self.settingsButtonPressed(_:)), for: .touchUpInside)
+        footerView.locationButton?.addTarget(self, action: #selector(self.locationButtonPressed(_:)), for: .touchUpInside)
 
         view.addSubview(footerView)
 
@@ -42,8 +42,11 @@ class MainViewController: UIViewController {
         UIApplication.shared.open(settingsURL)
     }
 
-    @objc func citiesButtonPressed(_: UIButton) {
-        let viewController = LocationViewController()
+    @objc func locationButtonPressed(_: UIButton) {
+        let delegate: AppDelegate! = UIApplication.shared.delegate as? AppDelegate
+        assert(delegate != nil)
+
+        let viewController = LocationViewController(viewModel: LocationViewModel(managedObjectContext: delegate.persistentContainer.newBackgroundContext()))
         self.present(viewController, animated: true, completion: nil)
     }
 }

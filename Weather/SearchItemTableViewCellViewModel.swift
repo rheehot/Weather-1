@@ -8,14 +8,31 @@
 
 import Foundation
 
-class SearchItemTableViewCellViewModel: NSObject {
-    let title: String
+class SearchItemTableViewCellViewModel: Hashable {
+    static let reuseIdentifier = "SearchItemTableViewCellViewModel"
 
-    let subtitle: String
+    static func == (lhs: SearchItemTableViewCellViewModel, rhs: SearchItemTableViewCellViewModel) -> Bool {
+        return lhs.indexPath == rhs.indexPath &&
+            lhs.location == rhs.location
+    }
 
-    init(title: String, subtitle: String) {
-        self.title = title
-        self.subtitle = subtitle
-        super.init()
+    let indexPath: IndexPath
+
+    let location: LocationSearchManager.Location
+
+    init(indexPath: IndexPath, location: LocationSearchManager.Location) {
+        self.indexPath = indexPath
+        self.location = location
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.indexPath)
+        hasher.combine(self.location)
+    }
+}
+
+extension SearchItemTableViewCellViewModel {
+    convenience init(index: Int, location: LocationSearchManager.Location) {
+        self.init(indexPath: IndexPath(row: index, section: 0), location: location)
     }
 }

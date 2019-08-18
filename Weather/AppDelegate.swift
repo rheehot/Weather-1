@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         container.loadPersistentStores { _, error in
             guard error == nil else {
                 let message = String(describing: error!)
-                os_log(.error, "%@", message as NSString)
+                os_log(.error, "%@", message)
                 fatalError(message)
             }
         }
@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                 try context.save()
             } catch {
                 let message = String(describing: error)
-                os_log(.error, "%@", message as NSString)
+                os_log(.error, "%@", message)
                 fatalError(message)
             }
         }

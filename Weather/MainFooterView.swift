@@ -11,9 +11,9 @@ import UIKit
 class MainFooterView: UIView {
     weak var pageControl: UIPageControl?
 
-    weak var leftButton: UIButton?
+    weak var settingsButton: UIButton?
 
-    weak var rightButton: UIButton?
+    weak var locationButton: UIButton?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,30 +35,30 @@ class MainFooterView: UIView {
             pageControl.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
         ])
 
-        let leftButton = UIButton(type: .system)
-        self.leftButton = leftButton
-        leftButton.translatesAutoresizingMaskIntoConstraints = false
-        leftButton.setImage(UIImage(named: "cog"), for: .normal)
-        leftButton.tintColor = UIColor(named: "GRAY6")
+        let settingsButton = UIButton(type: .system)
+        self.settingsButton = settingsButton
+        settingsButton.translatesAutoresizingMaskIntoConstraints = false
+        settingsButton.setImage(UIImage(named: "cog"), for: .normal)
+        settingsButton.tintColor = UIColor(named: "GRAY6")
 
-        self.addSubview(leftButton)
+        self.addSubview(settingsButton)
 
         NSLayoutConstraint.activate([
-            leftButton.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor, constant: 4.0),
-            leftButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
+            settingsButton.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor, constant: 4.0),
+            settingsButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
         ])
 
-        let rightButton = UIButton(type: .system)
-        self.rightButton = rightButton
-        rightButton.translatesAutoresizingMaskIntoConstraints = false
-        rightButton.setImage(UIImage(named: "list-ul-solid"), for: .normal)
-        rightButton.tintColor = UIColor(named: "GRAY6")
+        let locationButton = UIButton(type: .system)
+        self.locationButton = locationButton
+        locationButton.translatesAutoresizingMaskIntoConstraints = false
+        locationButton.setImage(UIImage(named: "list-ul-solid"), for: .normal)
+        locationButton.tintColor = UIColor(named: "GRAY6")
 
-        self.addSubview(rightButton)
+        self.addSubview(locationButton)
 
         NSLayoutConstraint.activate([
-            self.layoutMarginsGuide.trailingAnchor.constraint(equalTo: rightButton.trailingAnchor, constant: 4.0),
-            rightButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
+            self.layoutMarginsGuide.trailingAnchor.constraint(equalTo: locationButton.trailingAnchor, constant: 4.0),
+            locationButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
         ])
     }
 
