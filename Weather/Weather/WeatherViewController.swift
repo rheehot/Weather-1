@@ -12,7 +12,7 @@ import UIKit
 class WeatherToolbar: UIView {}
 
 class WeatherViewController: UIViewController {
-    weak var toolbar: WeatherToolbar?
+    weak var toolbar: WeatherToolbar!
 
     override func loadView() {
         let view = UIView()

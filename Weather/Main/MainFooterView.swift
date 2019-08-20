@@ -9,11 +9,11 @@
 import UIKit
 
 class MainFooterView: UIView {
-    weak var pageControl: UIPageControl?
+    weak var pageControl: UIPageControl!
 
-    weak var settingsButton: UIButton?
+    weak var settingsButton: UIButton!
 
-    weak var locationButton: UIButton?
+    weak var locationButton: UIButton!
 
     override init(frame: CGRect) {
         super.init(frame: frame)

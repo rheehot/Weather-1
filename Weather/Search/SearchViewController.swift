@@ -55,8 +55,8 @@ class SearchViewController: UIViewController {
     }
 
     func errorOccurred(_ error: Error) {
-        let alert = UIAlertController(title: "Error Occurred", message: "\(error)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(title: "오류가 발생했습니다", message: "\(error)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
         self.present(alert, animated: true)
     }
 
@@ -82,10 +82,20 @@ extension SearchViewController: UITableViewDataSource {
 
 extension SearchViewController: UITableViewDelegate {
     func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.viewModel.didSelect(at: indexPath) { result in
+        if self.navigationItem.searchController?.isActive ?? false {
+            self.dismiss(animated: false)
+        }
+
+        self.viewModel.didSelect(at: indexPath) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             switch result {
             case .success:
-                self.presentingViewController?.dismiss(animated: true)
+                DispatchQueue.main.async {
+                    self.dismiss(animated: true)
+                }
             case let .failure(error):
                 DispatchQueue.main.async {
                     self.errorOccurred(error)
@@ -97,25 +107,25 @@ extension SearchViewController: UITableViewDelegate {
 
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let query = searchController.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines), !query.isEmpty else {
-            return
-        }
-
-        self.pendingSearchItem?.cancel()
-
-        let searchItem = DispatchWorkItem { [weak self] in
-            guard let self = self else {
+        DispatchQueue.main.async {
+            guard let query = searchController.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines), !query.isEmpty else {
                 return
             }
 
-            self.viewModel.search(query: query) { results in
-                switch results {
-                case let .success(results):
-                    let oldValue = Set(self.viewModel.results)
+            self.pendingSearchItem?.cancel()
 
-                    let newValue = Set(results)
+            let searchItem = DispatchWorkItem { [weak self] in
+                guard let self = self else {
+                    return
+                }
 
-                    DispatchQueue.main.async {
+                self.viewModel.search(query: query) { results in
+                    switch results {
+                    case let .success(results):
+                        let oldValue = Set(results)
+
+                        let newValue = Set(self.viewModel.results)
+
                         self.tableView.beginUpdates()
 
                         self.tableView.insertRows(at: newValue.subtracting(oldValue).map { $0.indexPath }, with: .fade)
@@ -123,25 +133,23 @@ extension SearchViewController: UISearchResultsUpdating {
                         self.tableView.deleteRows(at: oldValue.subtracting(newValue).map { $0.indexPath }, with: .fade)
 
                         self.tableView.endUpdates()
-                    }
-                case let .failure(error):
-                    DispatchQueue.main.async {
+                    case let .failure(error):
                         self.errorOccurred(error)
                     }
                 }
+
+                self.pendingSearchItem = nil
             }
+            self.pendingSearchItem = searchItem
 
-            self.pendingSearchItem = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300),
+                                          execute: searchItem)
         }
-        self.pendingSearchItem = searchItem
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300),
-                                      execute: searchItem)
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_: UISearchBar) {
-        self.presentingViewController?.dismiss(animated: true)
+        self.dismiss(animated: true)
     }
 }

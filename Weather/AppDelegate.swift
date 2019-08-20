@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let container = NSPersistentContainer(name: "Weather")
         container.loadPersistentStores { _, error in
             guard error == nil else {
-                let message = String(describing: error!)
+                let message = "\(error!)"
                 os_log(.error, "%@", message)
                 fatalError(message)
             }
@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             do {
                 try context.save()
             } catch {
-                let message = String(describing: error)
+                let message = "\(error)"
                 os_log(.error, "%@", message)
                 fatalError(message)
             }

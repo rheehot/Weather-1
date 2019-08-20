@@ -1,13 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14492.1" systemVersion="18G87" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Forecast" representedClassName="Forecast" syncable="YES" codeGenerationType="class">
+        <attribute name="code" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="highTemperature" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lowTemperature" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="text" attributeType="String" syncable="YES"/>
+        <attribute name="weekday" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="weather" maxCount="1" deletionRule="Nullify" destinationEntity="Weather" inverseName="forecasts" inverseEntity="Weather" syncable="YES"/>
+    </entity>
     <entity name="Location" representedClassName="Location" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="latitude" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="subtitle" attributeType="String" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="weather" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Weather" inverseName="location" inverseEntity="Weather" syncable="YES"/>
+    </entity>
+    <entity name="Weather" representedClassName="Weather" syncable="YES" codeGenerationType="class">
+        <attribute name="chill" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="city" attributeType="String" syncable="YES"/>
+        <attribute name="code" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="country" attributeType="String" syncable="YES"/>
+        <attribute name="direction" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="humidity" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pressure" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="publicationDate" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="region" attributeType="String" syncable="YES"/>
+        <attribute name="rising" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="speed" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sunrise" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sunset" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="temperature" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="text" attributeType="String" syncable="YES"/>
+        <attribute name="timeZone" attributeType="Transformable" customClassName="TimeZone" syncable="YES"/>
+        <attribute name="visibility" attributeType="Double" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="woeid" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="forecasts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Forecast" inverseName="weather" inverseEntity="Forecast" syncable="YES"/>
+        <relationship name="location" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="weather" inverseEntity="Location" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Location" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="Forecast" positionX="-45" positionY="45" width="128" height="150"/>
+        <element name="Location" positionX="-63" positionY="-18" width="128" height="150"/>
+        <element name="Weather" positionX="-63" positionY="18" width="128" height="375"/>
     </elements>
 </model>

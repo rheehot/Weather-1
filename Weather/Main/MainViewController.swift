@@ -42,11 +42,33 @@ class MainViewController: UIViewController {
         UIApplication.shared.open(settingsURL)
     }
 
+    func errorOccurred(_ error: Error) {
+        let alert = UIAlertController(title: "오류가 발생했습니다", message: "\(error)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        self.present(alert, animated: true)
+    }
+
     @objc func locationButtonPressed(_: UIButton) {
         let delegate: AppDelegate! = UIApplication.shared.delegate as? AppDelegate
         assert(delegate != nil)
 
-        let viewController = LocationViewController(viewModel: LocationViewModel(managedObjectContext: delegate.persistentContainer.newBackgroundContext()))
-        self.present(viewController, animated: true, completion: nil)
+        let appID: String! = Bundle.main.object(forInfoDictionaryKey: "YahooAppID") as? String
+        assert(appID != nil)
+
+        let clientID: String! = Bundle.main.object(forInfoDictionaryKey: "YahooClientID") as? String
+        assert(clientID != nil)
+
+        let clientSecret: String! = Bundle.main.object(forInfoDictionaryKey: "YahooClientSecret") as? String
+        assert(clientSecret != nil)
+
+        let weatherAPI = YahooWeatherAPI(appID: appID, clientID: clientID, clientSecret: clientSecret)
+
+        switch Result(catching: { try LocationViewModel(managedObjectContext: delegate.persistentContainer.newBackgroundContext(), weatherAPI: weatherAPI) }) {
+        case let .success(viewModel):
+            let viewController = LocationViewController(viewModel: viewModel)
+            self.present(viewController, animated: true)
+        case let .failure(error):
+            self.errorOccurred(error)
+        }
     }
 }

@@ -9,14 +9,14 @@
 import UIKit
 
 class SearchItemTableViewCell: UITableViewCell {
-    weak var titleLabel: UILabel?
+    weak var titleLabel: UILabel!
 
-    weak var subtitleLabel: UILabel?
+    weak var subtitleLabel: UILabel!
 
     var viewModel: SearchItemTableViewCellViewModel? {
         didSet {
-            self.titleLabel?.text = self.viewModel?.location.title
-            self.subtitleLabel?.text = self.viewModel?.location.subtitle
+            self.titleLabel.text = self.viewModel?.location.title
+            self.subtitleLabel.text = self.viewModel?.location.subtitle
         }
     }
 
@@ -57,7 +57,7 @@ class SearchItemTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        self.titleLabel?.text = nil
-        self.subtitleLabel?.text = nil
+        self.titleLabel.text = nil
+        self.subtitleLabel.text = nil
     }
 }

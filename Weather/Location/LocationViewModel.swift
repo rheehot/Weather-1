@@ -11,15 +11,17 @@ import Foundation
 import os
 
 class LocationViewModel: NSObject {
-    static let errorOccurredNotification = Notification.Name(rawValue: "LocationViewModel.errorOccurredNotification")
-
-    static let errorUserInfoKey = "LocationViewModel.errorUserInfoKey"
+    private let queue = DispatchQueue(label: "LocationViewModel")
 
     private let fetchedResultsController: NSFetchedResultsController<Location>
 
-    @objc dynamic var results: [LocationTableViewCellViewModel] = []
+    private let weatherAPI: YahooWeatherAPI
 
-    init(managedObjectContext: NSManagedObjectContext) {
+    @objc dynamic var results: [LocationTableViewCellViewModel]
+
+    init(managedObjectContext: NSManagedObjectContext, weatherAPI: YahooWeatherAPI) throws {
+        self.weatherAPI = weatherAPI
+
         let fetchRequest: NSFetchRequest = Location.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "createdAt", ascending: true),
@@ -31,21 +33,19 @@ class LocationViewModel: NSObject {
                                                                   cacheName: nil)
         self.fetchedResultsController = fetchedResultsController
 
+        try fetchedResultsController.performFetch()
+
+        let viewModels = fetchedResultsController.fetchedObjects?
+            .enumerated()
+            .map { LocationTableViewCellViewModel(managedObjectContext: managedObjectContext,
+                                                  index: $0.offset,
+                                                  location: $0.element,
+                                                  weatherAPI: weatherAPI) }
+        self.results = viewModels ?? []
+
         super.init()
 
         fetchedResultsController.delegate = self
-
-        do {
-            try fetchedResultsController.performFetch()
-
-            if let fetchedObjects = fetchedResultsController.fetchedObjects?.enumerated().map(LocationTableViewCellViewModel.init) {
-                self.results = fetchedObjects
-            }
-        } catch {
-            NotificationCenter.default.post(name: LocationViewModel.errorOccurredNotification,
-                                            object: self,
-                                            userInfo: [LocationViewModel.errorUserInfoKey: error])
-        }
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.managedObjectContextDidSave(_:)),
@@ -56,6 +56,20 @@ class LocationViewModel: NSObject {
     @objc func managedObjectContextDidSave(_ notification: Notification) {
         self.fetchedResultsController.managedObjectContext.mergeChanges(fromContextDidSave: notification)
     }
+
+    func deleteLocation(at indexPath: IndexPath, completion: @escaping (Result<Void, Error>) -> Void) {
+        self.queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let managedObjectContext = self.fetchedResultsController.managedObjectContext
+
+            managedObjectContext.delete(self.results[indexPath.row].location)
+
+            completion(Result { try managedObjectContext.save() })
+        }
+    }
 }
 
 extension LocationViewModel: NSFetchedResultsControllerDelegate {
@@ -63,6 +77,11 @@ extension LocationViewModel: NSFetchedResultsControllerDelegate {
         guard let fetchedObjects = controller.fetchedObjects as? [Location] else {
             return
         }
-        self.results = fetchedObjects.enumerated().map(LocationTableViewCellViewModel.init)
+
+        self.results = fetchedObjects.enumerated()
+            .map { LocationTableViewCellViewModel(managedObjectContext: controller.managedObjectContext,
+                                                  index: $0.offset,
+                                                  location: $0.element,
+                                                  weatherAPI: self.weatherAPI) }
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 extension String {
-    init(characterSet: String, count: Int) {
+    init(randomStringFrom characterSet: String, count: Int) {
         assert(count > 0)
         self.init((0 ..< count).compactMap { _ in characterSet.randomElement() })
     }

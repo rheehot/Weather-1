@@ -9,20 +9,23 @@
 import UIKit
 
 class LocationFooterView: UIView {
-    weak var addButton: UIButton?
+    weak var versionLabel: UILabel!
 
-    weak var temperatureUnitButton: UIButton?
+    weak var addButton: UIButton!
+
+    weak var temperatureUnitButton: UIButton!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
         let versionLabel = UILabel()
+        self.versionLabel = versionLabel
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
         versionLabel.font = .preferredFont(forTextStyle: .footnote)
         versionLabel.textColor = UIColor(named: "GRAY6")
-        versionLabel.text = "0.1.0(1)"
 
         self.addSubview(versionLabel)
+
         NSLayoutConstraint.activate([
             versionLabel.centerXAnchor.constraint(equalTo: self.layoutMarginsGuide.centerXAnchor),
             self.layoutMarginsGuide.bottomAnchor.constraint(equalTo: versionLabel.bottomAnchor),
@@ -44,7 +47,7 @@ class LocationFooterView: UIView {
         let temperatureUnitButton = UIButton(type: .system)
         self.temperatureUnitButton = temperatureUnitButton
         temperatureUnitButton.translatesAutoresizingMaskIntoConstraints = false
-        temperatureUnitButton.setImage(UIImage(named: "cog"), for: .normal)
+        temperatureUnitButton.setImage(UIImage(named: "temperature"), for: .normal)
         temperatureUnitButton.tintColor = UIColor(named: "GRAY6")
 
         self.addSubview(temperatureUnitButton)

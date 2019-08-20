@@ -12,7 +12,9 @@ import MapKit
 import os
 
 class SearchViewModel {
-    private let locationSearchManager = LocationSearchManager()
+    private let queue = DispatchQueue(label: "SearchViewModel")
+
+    private let locationSearchManager = SearchManager()
 
     private let managedObjectContext: NSManagedObjectContext
 
@@ -29,16 +31,16 @@ class SearchViewModel {
             }
 
             switch results {
-            case let .success(results):
-                let results = results.enumerated().map(SearchItemTableViewCellViewModel.init)
+            case let .success(locations):
+                let results = self.results
+                self.results = locations.enumerated().map(SearchItemTableViewCellViewModel.init)
                 completion(.success(results))
-                self.results = results
             case let .failure(error as NSError):
                 switch (error.domain, error.code) {
                 case (MKError.errorDomain, Int(MKError.Code.placemarkNotFound.rawValue)):
-                    let results: [SearchItemTableViewCellViewModel] = []
+                    let results = self.results
+                    self.results = []
                     completion(.success(results))
-                    self.results = results
                 default:
                     completion(.failure(error))
                 }
@@ -46,20 +48,18 @@ class SearchViewModel {
         }
     }
 
-    func didSelect(at indexPath: IndexPath, completion: (Result<Void, Error>) -> Void) {
-        let viewModel = self.results[indexPath.row]
+    func didSelect(at indexPath: IndexPath, completion: @escaping (Result<Void, Error>) -> Void) {
+        self.queue.async {
+            let viewModel = self.results[indexPath.row]
 
-        let location = Location(context: self.managedObjectContext)
-        location.title = viewModel.location.title
-        location.subtitle = viewModel.location.subtitle
-        location.latitude = viewModel.location.latitude as NSNumber
-        location.longitude = viewModel.location.longitude as NSNumber
-        location.createdAt = Date()
+            let location = Location(context: self.managedObjectContext)
+            location.title = viewModel.location.title
+            location.subtitle = viewModel.location.subtitle
+            location.latitude = viewModel.location.latitude as NSNumber
+            location.longitude = viewModel.location.longitude as NSNumber
+            location.createdAt = Date()
 
-        if self.managedObjectContext.hasChanges {
-            completion(Result {
-                try self.managedObjectContext.save()
-            })
+            completion(Result { try self.managedObjectContext.save() })
         }
     }
 }
