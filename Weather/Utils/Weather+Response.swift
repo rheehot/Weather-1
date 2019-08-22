@@ -47,8 +47,11 @@ extension Weather {
             managedObject.text = forecast.text
             managedObject.weekday = forecast.weekday.code as NSNumber
             managedObject.code = forecast.code.rawValue as NSNumber
-            managedObject.highTemperature = forecast.highTemperature as NSNumber
-            managedObject.lowTemperature = forecast.lowTemperature as NSNumber
+
+            let converter = UnitTemperature.celsius.converter
+            managedObject.highTemperature = converter.baseUnitValue(fromValue: Double(forecast.highTemperature)) as NSNumber
+            managedObject.lowTemperature = converter.baseUnitValue(fromValue: Double(forecast.lowTemperature)) as NSNumber
+
             managedObject.date = forecast.date
 
             return managedObject

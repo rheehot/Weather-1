@@ -35,10 +35,21 @@ extension YahooWeatherAPI.Response.CurrentObservation {
         /// - steady: 정상
         /// - rising: 상승
         /// - falling: 하강
-        enum BarometricPressure: Int, Decodable {
+        enum BarometricPressure: Int, Decodable, CustomStringConvertible {
             case steady = 0
             case rising = 1
             case falling = 2
+
+            var description: String {
+                switch self {
+                case .steady:
+                    return "정상"
+                case .rising:
+                    return "상승"
+                case .falling:
+                    return "하강"
+                }
+            }
         }
     }
 }

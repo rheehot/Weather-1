@@ -8,17 +8,6 @@
 
 import UIKit
 
-class WeatherViewModel: NSObject {
-    let index: Int
-
-    let location: Location
-
-    init(index: Int, location: Location) {
-        self.index = index
-        self.location = location
-    }
-}
-
 class WeatherViewController: UIViewController {
     let viewModel: WeatherViewModel
 
@@ -32,20 +21,74 @@ class WeatherViewController: UIViewController {
     }
 
     override func loadView() {
-        let view = UIView()
-        self.view = view
-        view.backgroundColor = .white
+        let tableView = UITableView()
+        self.view = tableView
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
 
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .preferredFont(forTextStyle: .largeTitle)
-        label.text = self.viewModel.location.title
+        tableView.register(WeatherForecastTableViewCell.self,
+                           forCellReuseIdentifier: WeatherForecastTableViewCellViewModel.reuseIdentifier)
+        tableView.register(WeatherLocationTableViewCell.self,
+                           forCellReuseIdentifier: WeatherLocationTableViewCellViewModel.reuseIdentifier)
+        tableView.register(WeatherConditionTableViewCell.self,
+                           forCellReuseIdentifier: WeatherConditionTableViewCellViewModel.reuseIdentifier)
+        tableView.register(WeatherAstronomyTableViewCell.self,
+                           forCellReuseIdentifier: WeatherAstronomyTableViewCellViewModel.reuseIdentifier)
+        tableView.register(WeatherAtmosphereTableViewCell.self,
+                           forCellReuseIdentifier: WeatherAtmosphereTableViewCellViewModel.reuseIdentifier)
+        tableView.register(WeatherWindTableViewCell.self,
+                           forCellReuseIdentifier: WeatherWindTableViewCellViewModel.reuseIdentifier)
 
-        view.addSubview(label)
+        tableView.dataSource = self
 
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.layoutMarginsGuide.centerYAnchor),
-        ])
+        if let publicationDate = self.viewModel.location.weather?.publicationDate {
+            let publicationDateLabel = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 64.0))
+            tableView.tableFooterView = publicationDateLabel
+            publicationDateLabel.font = .preferredFont(forTextStyle: .footnote)
+            publicationDateLabel.textAlignment = .center
+
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            formatter.timeStyle = .short
+
+            publicationDateLabel.text = formatter.string(from: publicationDate)
+        }
+    }
+
+    var tableView: UITableView {
+        let tableView: UITableView! = self.view as? UITableView
+        assert(tableView != nil)
+        return tableView
+    }
+}
+
+extension WeatherViewController: UITableViewDataSource {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        return self.viewModel.results.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let viewModel = self.viewModel.results[indexPath.row]
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: type(of: viewModel).reuseIdentifier, for: indexPath)
+
+        switch (cell, viewModel) {
+        case let (cell, viewModel) as (WeatherLocationTableViewCell, WeatherLocationTableViewCellViewModel):
+            cell.viewModel = viewModel
+        case let (cell, viewModel) as (WeatherForecastTableViewCell, WeatherForecastTableViewCellViewModel):
+            cell.viewModel = viewModel
+        case let (cell, viewModel) as (WeatherConditionTableViewCell, WeatherConditionTableViewCellViewModel):
+            cell.viewModel = viewModel
+        case let (cell, viewModel) as (WeatherAstronomyTableViewCell, WeatherAstronomyTableViewCellViewModel):
+            cell.viewModel = viewModel
+        case let (cell, viewModel) as (WeatherAtmosphereTableViewCell, WeatherAtmosphereTableViewCellViewModel):
+            cell.viewModel = viewModel
+        case let (cell, viewModel) as (WeatherWindTableViewCell, WeatherWindTableViewCellViewModel):
+            cell.viewModel = viewModel
+        default:
+            fatalError()
+        }
+
+        return cell
     }
 }

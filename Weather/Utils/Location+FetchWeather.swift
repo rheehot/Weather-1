@@ -16,7 +16,7 @@ extension Location {
             return nil
         }
 
-        let needsUpdate = self.updatedAt == nil ? true : Date().timeIntervalSince(self.updatedAt!) > 900
+        let needsUpdate = self.updatedAt == nil ? true : Date().timeIntervalSince(self.updatedAt!) > 300
 
         guard force || needsUpdate else {
             return nil
@@ -42,7 +42,7 @@ extension Location {
                 let weather = Weather(context: managedObjectContext, response: response)
                 self.weather = weather
                 weather.location = self
-                
+
                 self.updatedAt = Date()
 
                 completion(Result { try managedObjectContext.save() })

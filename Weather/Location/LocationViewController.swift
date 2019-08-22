@@ -29,7 +29,7 @@ class LocationViewController: UIViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
-        
+
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(self.refresh), for: .valueChanged)
@@ -47,17 +47,17 @@ class LocationViewController: UIViewController {
         footerView.addButton.addTarget(self, action: #selector(self.addButtonPressed(_:)), for: .touchUpInside)
         footerView.temperatureUnitButton.addTarget(self, action: #selector(self.temperatureUnitButtonPressed(_:)), for: .touchUpInside)
     }
-    
-    @objc func refresh(_ sender: UIRefreshControl) {
+
+    @objc func refresh(_: UIRefreshControl) {
         let dispatchGroup = DispatchGroup()
-        
+
         self.viewModel.changeIsUserDriven = true
-        
-        self.viewModel.results.forEach { (viewModel) in
+
+        self.viewModel.results.forEach { viewModel in
             dispatchGroup.enter()
-            
-            viewModel.updateLocation { (result) in
-                if case .failure(let error) = result {
+
+            viewModel.updateLocation { result in
+                if case let .failure(error) = result {
                     DispatchQueue.main.async {
                         self.errorOccurred(error)
                     }
@@ -65,7 +65,7 @@ class LocationViewController: UIViewController {
                 dispatchGroup.leave()
             }
         }
-        
+
         dispatchGroup.notify(queue: .main) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { [weak self] in
                 guard let self = self else {
@@ -292,8 +292,7 @@ extension LocationViewController: UITableViewDelegate {
                 }
             }
         }
-        
-        
+
         return UISwipeActionsConfiguration(actions: [updateAction])
     }
 }

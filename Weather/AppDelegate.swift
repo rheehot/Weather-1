@@ -17,7 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         let window = UIWindow()
         self.window = window
-        window.rootViewController = MainViewController(viewModel: MainViewModel(managedObjectContext: self.persistentContainer.viewContext))
+
+        let appID: String! = Bundle.main.object(forInfoDictionaryKey: "YahooAppID") as? String
+        assert(appID != nil)
+
+        let clientID: String! = Bundle.main.object(forInfoDictionaryKey: "YahooClientID") as? String
+        assert(clientID != nil)
+
+        let clientSecret: String! = Bundle.main.object(forInfoDictionaryKey: "YahooClientSecret") as? String
+        assert(clientSecret != nil)
+
+        let weatherAPI = YahooWeatherAPI(appID: appID, clientID: clientID, clientSecret: clientSecret)
+
+        window.rootViewController = MainViewController(viewModel: MainViewModel(managedObjectContext: self.persistentContainer.viewContext, weatherAPI: weatherAPI))
         window.makeKeyAndVisible()
 
         return true

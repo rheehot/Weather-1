@@ -16,7 +16,11 @@ class MainViewModel: NSObject {
 
     @objc dynamic var currentPage = 0
 
-    init(managedObjectContext: NSManagedObjectContext) {
+    let weatherAPI: YahooWeatherAPI
+
+    init(managedObjectContext: NSManagedObjectContext, weatherAPI: YahooWeatherAPI) {
+        self.weatherAPI = weatherAPI
+
         let fetchRequest: NSFetchRequest = Location.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "createdAt", ascending: true),
@@ -47,7 +51,7 @@ class MainViewModel: NSObject {
 
         let fetchedObjects: [Location]! = self.fetchedResultsController.fetchedObjects
         assert(fetchedObjects != nil)
-        self.results = fetchedObjects.enumerated().map(WeatherViewModel.init(index:location:))
+        self.results = fetchedObjects.enumerated().map { WeatherViewModel(index: $0.offset, location: $0.element, weatherAPI: self.weatherAPI) }
     }
 }
 
@@ -55,6 +59,6 @@ extension MainViewModel: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         let fetchedObjects: [Location]! = controller.fetchedObjects as? [Location]
         assert(fetchedObjects != nil)
-        self.results = fetchedObjects.enumerated().map(WeatherViewModel.init(index:location:))
+        self.results = fetchedObjects.enumerated().map { WeatherViewModel(index: $0.offset, location: $0.element, weatherAPI: self.weatherAPI) }
     }
 }
