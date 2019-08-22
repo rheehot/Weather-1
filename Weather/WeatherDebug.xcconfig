@@ -1,0 +1,14 @@
+//
+//  WeatherDebug.xcconfig
+//  Weather
+//
+//  Created by 진재명 on 8/14/19.
+//  Copyright © 2019 Jaemyeong Jin. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+YAHOO_APP_ID = 1UgT9o5g
+YAHOO_CLIENT_ID = dj0yJmk9YWlkRWdkYU00MkRIJmQ9WVdrOU1WVm5WRGx2TldjbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTQ2
+YAHOO_CLIENT_SECRET = f4d1280cd146c37d4d79ed6af827add1ad9208c4

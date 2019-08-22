@@ -19,6 +19,6 @@ platform :ios do
   setup_travis
 
   lane :tests do
-    run_tests(scheme: "Weather", device: "iPhone XS")
+    run_tests(scheme: "Weather", device: "iPhone Xs")
   end
 end

@@ -10,17 +10,6 @@ import CoreData
 import os
 import UIKit
 
-class MainViewController: UIViewController {
-    override func loadView() {
-        let view = UIView()
-        self.view = view
-        view.backgroundColor = UIColor(red: .random(in: 0.0 ... 1.0),
-                                       green: .random(in: 0.0 ... 1.0),
-                                       blue: .random(in: 0.0 ... 1.0),
-                                       alpha: 1.0)
-    }
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
     var window: UIWindow?
@@ -29,12 +18,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let window = UIWindow()
         self.window = window
 
-        let rootViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
-        rootViewController.setViewControllers([MainViewController()], direction: .forward, animated: false)
-        rootViewController.dataSource = self
-        rootViewController.delegate = self
+        let appID: String! = Bundle.main.object(forInfoDictionaryKey: "YahooAppID") as? String
+        assert(appID != nil)
 
-        window.rootViewController = rootViewController
+        let clientID: String! = Bundle.main.object(forInfoDictionaryKey: "YahooClientID") as? String
+        assert(clientID != nil)
+
+        let clientSecret: String! = Bundle.main.object(forInfoDictionaryKey: "YahooClientSecret") as? String
+        assert(clientSecret != nil)
+
+        let weatherAPI = YahooWeatherAPI(appID: appID, clientID: clientID, clientSecret: clientSecret)
+
+        window.rootViewController = MainViewController(viewModel: MainViewModel(managedObjectContext: self.persistentContainer.viewContext, weatherAPI: weatherAPI))
         window.makeKeyAndVisible()
 
         return true
@@ -48,8 +43,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let container = NSPersistentContainer(name: "Weather")
         container.loadPersistentStores { _, error in
             guard error == nil else {
-                let message = String(describing: error!)
-                os_log(.error, "%@", message as NSString)
+                let message = "\(error!)"
+                os_log(.error, "%@", message)
                 fatalError(message)
             }
         }
@@ -62,24 +57,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             do {
                 try context.save()
             } catch {
-                let message = String(describing: error)
-                os_log(.error, "%@", message as NSString)
+                let message = "\(error)"
+                os_log(.error, "%@", message)
                 fatalError(message)
             }
         }
     }
-}
-
-extension AppDelegate: UIPageViewControllerDataSource {
-    func pageViewController(_: UIPageViewController, viewControllerBefore _: UIViewController) -> UIViewController? {
-        return MainViewController()
-    }
-
-    func pageViewController(_: UIPageViewController, viewControllerAfter _: UIViewController) -> UIViewController? {
-        return MainViewController()
-    }
-}
-
-extension AppDelegate: UIPageViewControllerDelegate {
-    
 }
