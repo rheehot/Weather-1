@@ -116,14 +116,18 @@ class LocationViewController: UIViewController {
         guard !self.viewModel.changeIsUserDriven else {
             return
         }
-        self.tableView.beginUpdates()
+        DispatchQueue.main.async {
+            self.tableView.beginUpdates()
+        }
     }
 
     @objc func didChangeContent(_: Notification) {
         guard !self.viewModel.changeIsUserDriven else {
             return
         }
-        self.tableView.endUpdates()
+        DispatchQueue.main.async {
+            self.tableView.endUpdates()
+        }
     }
 
     @objc func didInsertObject(_ notification: Notification) {
@@ -131,10 +135,12 @@ class LocationViewController: UIViewController {
             return
         }
 
-        let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.newIndexPathUserInfoKey] as? IndexPath
-        assert(indexPath != nil)
+        DispatchQueue.main.async {
+            let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.newIndexPathUserInfoKey] as? IndexPath
+            assert(indexPath != nil)
 
-        self.tableView.insertRows(at: [indexPath], with: .fade)
+            self.tableView.insertRows(at: [indexPath], with: .fade)
+        }
     }
 
     @objc func didDeleteObject(_ notification: Notification) {
@@ -142,10 +148,12 @@ class LocationViewController: UIViewController {
             return
         }
 
-        let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.indexPathUserInfoKey] as? IndexPath
-        assert(indexPath != nil)
+        DispatchQueue.main.async {
+            let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.indexPathUserInfoKey] as? IndexPath
+            assert(indexPath != nil)
 
-        self.tableView.deleteRows(at: [indexPath], with: .fade)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
 
     @objc func didMoveObject(_ notification: Notification) {
@@ -153,14 +161,16 @@ class LocationViewController: UIViewController {
             return
         }
 
-        let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.indexPathUserInfoKey] as? IndexPath
-        assert(indexPath != nil)
+        DispatchQueue.main.async {
+            let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.indexPathUserInfoKey] as? IndexPath
+            assert(indexPath != nil)
 
-        let newIndexPath: IndexPath! = notification.userInfo?[LocationViewModel.newIndexPathUserInfoKey] as? IndexPath
-        assert(newIndexPath != nil)
+            let newIndexPath: IndexPath! = notification.userInfo?[LocationViewModel.newIndexPathUserInfoKey] as? IndexPath
+            assert(newIndexPath != nil)
 
-        self.tableView.deleteRows(at: [indexPath], with: .fade)
-        self.tableView.insertRows(at: [indexPath], with: .fade)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            self.tableView.insertRows(at: [indexPath], with: .fade)
+        }
     }
 
     @objc func didUpdateObject(_ notification: Notification) {
@@ -168,13 +178,15 @@ class LocationViewController: UIViewController {
             return
         }
 
-        let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.indexPathUserInfoKey] as? IndexPath
-        assert(indexPath != nil)
+        DispatchQueue.main.async {
+            let indexPath: IndexPath! = notification.userInfo?[LocationViewModel.indexPathUserInfoKey] as? IndexPath
+            assert(indexPath != nil)
 
-        let newIndexPath: IndexPath! = notification.userInfo?[LocationViewModel.newIndexPathUserInfoKey] as? IndexPath
-        assert(newIndexPath != nil)
+            let newIndexPath: IndexPath! = notification.userInfo?[LocationViewModel.newIndexPathUserInfoKey] as? IndexPath
+            assert(newIndexPath != nil)
 
-        self.tableView.reloadRows(at: [indexPath], with: .fade)
+            self.tableView.reloadRows(at: [indexPath], with: .fade)
+        }
     }
 
     func errorOccurred(_ error: Error) {
