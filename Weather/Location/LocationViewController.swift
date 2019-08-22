@@ -193,7 +193,7 @@ class LocationViewController: UIViewController {
         let delegate: AppDelegate! = UIApplication.shared.delegate as? AppDelegate
         assert(delegate != nil)
 
-        let viewModel = SearchViewModel(managedObjectContext: delegate.persistentContainer.newBackgroundContext())
+        let viewModel = SearchViewModel(managedObjectContext: delegate.persistentContainer.viewContext)
 
         let viewController = UINavigationController(rootViewController: SearchViewController(viewModel: viewModel))
 

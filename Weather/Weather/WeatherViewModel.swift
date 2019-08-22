@@ -17,6 +17,12 @@ class WeatherViewModel: NSObject {
 
     let location: Location
 
+    var timer: Timer?
+
+    var sessionTask: URLSessionTask?
+
+    var results: [TableViewCellViewModel] = []
+
     init(index: Int, location: Location, weatherAPI: YahooWeatherAPI) {
         self.index = index
         self.location = location
@@ -55,10 +61,4 @@ class WeatherViewModel: NSObject {
         self.timer = timer
         timer.fire()
     }
-
-    var timer: Timer?
-
-    var sessionTask: URLSessionTask?
-
-    var results: [TableViewCellViewModel] = []
 }

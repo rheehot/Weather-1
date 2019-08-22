@@ -6,12 +6,16 @@
 //  Copyright © 2019 Jaemyeong Jin. All rights reserved.
 //
 
-import CoreData
-import os
 import UIKit
 
 class MainViewController: UIViewController {
     let viewModel: MainViewModel
+
+    weak var toolBar: MainToolBar!
+
+    weak var pageViewController: UIPageViewController!
+
+    var observation: [NSKeyValueObservation] = []
 
     init(viewModel: MainViewModel) {
         self.viewModel = viewModel
@@ -21,10 +25,6 @@ class MainViewController: UIViewController {
     required init?(coder _: NSCoder) {
         fatalError()
     }
-
-    weak var toolBar: MainToolBar!
-
-    weak var pageViewController: UIPageViewController!
 
     override func loadView() {
         let view = UIView()
@@ -110,14 +110,6 @@ class MainViewController: UIViewController {
         }
     }
 
-    var observation: [NSKeyValueObservation] = []
-
-    func errorOccurred(_ error: Error) {
-        let alert = UIAlertController(title: "오류가 발생했습니다", message: "\(error)", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        self.present(alert, animated: true)
-    }
-
     @objc func settingsButtonPressed(_: UIButton) {
         let settingsURL: URL! = URL(string: UIApplication.openSettingsURLString)
         assert(settingsURL != nil)
@@ -154,6 +146,12 @@ class MainViewController: UIViewController {
                                                    direction: currentPage < self.viewModel.currentPage ? .reverse : .forward,
                                                    animated: animated)
         self.viewModel.currentPage = currentPage
+    }
+
+    func errorOccurred(_ error: Error) {
+        let alert = UIAlertController(title: "오류가 발생했습니다", message: "\(error)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        self.present(alert, animated: true)
     }
 }
 

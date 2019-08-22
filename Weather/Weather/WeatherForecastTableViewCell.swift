@@ -99,6 +99,32 @@ class WeatherForecastTableViewCell: UITableViewCell {
         }
 
         NSLayoutConstraint.activate(constraints)
+
+        UserDefaults.standard.addObserver(self, forKeyPath: Temperature.userDefaultsKey, options: [.new], context: self.temperatureContext)
+    }
+
+    let temperatureContext = UnsafeMutableRawPointer.allocate(byteCount: 0, alignment: 0)
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        switch context {
+        case self.temperatureContext:
+            self.temperatureLabel.text = {
+                let highTemperature: Double! = self.viewModel?.forecast.highTemperature?.doubleValue
+                assert(highTemperature != nil)
+
+                let lowTemperature: Double! = self.viewModel?.forecast.lowTemperature?.doubleValue
+                assert(lowTemperature != nil)
+
+                return "\(temperatureText(value: highTemperature)) / \(temperatureText(value: lowTemperature))"
+            }()
+        default:
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+
+    deinit {
+        UserDefaults.standard.removeObserver(self, forKeyPath: Temperature.userDefaultsKey)
+        self.temperatureContext.deallocate()
     }
 
     required init?(coder _: NSCoder) {

@@ -21,7 +21,9 @@ extension Weather {
         self.longitude = response.location.longitude as NSNumber
         self.timeZone = response.location.timeZone
 
-        self.chill = response.currentObservation.wind.chill as NSNumber
+        let converter = UnitTemperature.celsius.converter
+
+        self.chill = converter.baseUnitValue(fromValue: Double(response.currentObservation.wind.chill)) as NSNumber
         self.direction = response.currentObservation.wind.direction as NSNumber
         self.speed = response.currentObservation.wind.speed as NSNumber
 
@@ -36,7 +38,6 @@ extension Weather {
         self.text = response.currentObservation.condition.text
         self.code = response.currentObservation.condition.code.rawValue as NSNumber
 
-        let converter = UnitTemperature.celsius.converter
         self.temperature = converter.baseUnitValue(fromValue: Double(response.currentObservation.condition.temperature)) as NSNumber
 
         self.publicationDate = response.currentObservation.publicationDate

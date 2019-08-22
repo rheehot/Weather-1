@@ -11,6 +11,12 @@ import UIKit
 class WeatherViewController: UIViewController {
     let viewModel: WeatherViewModel
 
+    var tableView: UITableView {
+        let tableView: UITableView! = self.view as? UITableView
+        assert(tableView != nil)
+        return tableView
+    }
+
     init(viewModel: WeatherViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -53,12 +59,6 @@ class WeatherViewController: UIViewController {
 
             publicationDateLabel.text = formatter.string(from: publicationDate)
         }
-    }
-
-    var tableView: UITableView {
-        let tableView: UITableView! = self.view as? UITableView
-        assert(tableView != nil)
-        return tableView
     }
 }
 

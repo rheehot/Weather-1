@@ -16,7 +16,7 @@ class WeatherWindTableViewCell: UITableViewCell {
             }
 
             assert(viewModel.weather.chill?.intValue != nil)
-            self.chillLabel.text = "체감 온도 \(viewModel.weather.chill!.intValue)"
+            self.chillLabel.text = "체감 온도 \(self.temperatureText(value: viewModel.weather.chill!.doubleValue))"
 
             assert(viewModel.weather.direction?.doubleValue != nil)
             self.directionLabel.text = "풍향 \(viewModel.weather.direction!.doubleValue)"
@@ -24,6 +24,19 @@ class WeatherWindTableViewCell: UITableViewCell {
             assert(viewModel.weather.speed?.intValue != nil)
             self.speedLabel.text = "풍속 \(viewModel.weather.speed!.doubleValue)"
         }
+    }
+
+    func temperatureText(value: Double) -> String {
+        let unit: UnitTemperature! = Temperature(rawValue: UserDefaults.standard.integer(forKey: Temperature.userDefaultsKey))?.unit
+        assert(unit != nil)
+
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 1
+
+        let value: String! = formatter.string(from: unit.converter.value(fromBaseUnitValue: value) as NSNumber)
+        assert(value != nil)
+
+        return "\(value!) \(unit.symbol)"
     }
 
     weak var chillLabel: UILabel!
@@ -68,6 +81,25 @@ class WeatherWindTableViewCell: UITableViewCell {
         }
 
         NSLayoutConstraint.activate(constraints)
+
+        UserDefaults.standard.addObserver(self, forKeyPath: Temperature.userDefaultsKey, options: [.new], context: self.temperatureContext)
+    }
+
+    let temperatureContext = UnsafeMutableRawPointer.allocate(byteCount: 0, alignment: 0)
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        switch context {
+        case self.temperatureContext:
+            assert(self.viewModel?.weather.chill?.intValue != nil)
+            self.chillLabel.text = "체감 온도 \(self.temperatureText(value: self.viewModel!.weather.chill!.doubleValue))"
+        default:
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+
+    deinit {
+        UserDefaults.standard.removeObserver(self, forKeyPath: Temperature.userDefaultsKey)
+        self.temperatureContext.deallocate()
     }
 
     required init?(coder _: NSCoder) {
