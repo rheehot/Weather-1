@@ -1,5 +1,9 @@
 # 변경 내역
 
+## [0.1.1] - 2019-08-22
+### 수정
+- CoreData Main Thread Context 버그 수정
+
 ## [0.1.0] - 2019-08-22
 ### 추가
 - MainViewController
@@ -34,4 +38,5 @@
 - Settings 번들
 - OAuth 1.0a Client
 
+[0.1.1]: https://github.com/jaemyeong/Weather/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/jaemyeong/Weather/releases/tag/v0.1.0

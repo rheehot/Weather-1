@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
         let weatherAPI = YahooWeatherAPI(appID: appID, clientID: clientID, clientSecret: clientSecret)
 
-        window.rootViewController = MainViewController(viewModel: MainViewModel(managedObjectContext: self.persistentContainer.viewContext, weatherAPI: weatherAPI))
+        window.rootViewController = MainViewController(viewModel: MainViewModel(managedObjectContext: self.persistentContainer.newBackgroundContext(), weatherAPI: weatherAPI))
         window.makeKeyAndVisible()
 
         return true

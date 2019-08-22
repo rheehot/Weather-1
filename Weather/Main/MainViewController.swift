@@ -78,10 +78,12 @@ class MainViewController: UIViewController {
                 return
             }
 
-            let newValue: Int! = change.newValue
-            assert(newValue != nil)
+            DispatchQueue.main.async {
+                let newValue: Int! = change.newValue
+                assert(newValue != nil)
 
-            self.toolBar.pageControl.currentPage = newValue
+                self.toolBar.pageControl.currentPage = newValue
+            }
         })
 
         self.observation.append(self.viewModel.observe(\.results, options: [.new]) { [weak self] _, change in
@@ -89,17 +91,19 @@ class MainViewController: UIViewController {
                 return
             }
 
-            let newValue: [WeatherViewModel]! = change.newValue
-            assert(newValue != nil)
+            DispatchQueue.main.async {
+                let newValue: [WeatherViewModel]! = change.newValue
+                assert(newValue != nil)
 
-            if !newValue.isEmpty {
-                let currentPage = self.viewModel.currentPage < newValue.count - 1 ? self.viewModel.currentPage : newValue.count - 1
-                self.viewModel.currentPage = currentPage
-                self.pageViewController.setViewControllers([WeatherViewController(viewModel: newValue[currentPage])],
-                                                           direction: .forward,
-                                                           animated: false)
-                self.toolBar.pageControl.numberOfPages = newValue.count
-                self.toolBar.pageControl.currentPage = currentPage
+                if !newValue.isEmpty {
+                    let currentPage = self.viewModel.currentPage < newValue.count - 1 ? self.viewModel.currentPage : newValue.count - 1
+                    self.viewModel.currentPage = currentPage
+                    self.pageViewController.setViewControllers([WeatherViewController(viewModel: newValue[currentPage])],
+                                                               direction: .forward,
+                                                               animated: false)
+                    self.toolBar.pageControl.numberOfPages = newValue.count
+                    self.toolBar.pageControl.currentPage = currentPage
+                }
             }
         })
 
@@ -132,7 +136,7 @@ class MainViewController: UIViewController {
 
         let weatherAPI = YahooWeatherAPI(appID: appID, clientID: clientID, clientSecret: clientSecret)
 
-        let viewModel = LocationViewModel(managedObjectContext: delegate.persistentContainer.viewContext, weatherAPI: weatherAPI)
+        let viewModel = LocationViewModel(managedObjectContext: delegate.persistentContainer.newBackgroundContext(), weatherAPI: weatherAPI)
         let viewController = LocationViewController(viewModel: viewModel)
         self.present(viewController, animated: true)
     }
