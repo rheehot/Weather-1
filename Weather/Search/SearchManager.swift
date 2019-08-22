@@ -48,7 +48,7 @@ class SearchManager {
         }
     }
 
-    private var localSearch: MKLocalSearch?
+    var localSearch: MKLocalSearch?
 
     func search(query: String, completion: @escaping (Result<[Location], Error>) -> Void) {
         self.localSearch?.cancel()

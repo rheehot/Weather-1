@@ -12,11 +12,9 @@ import MapKit
 import os
 
 class SearchViewModel {
-    private let queue = DispatchQueue(label: "SearchViewModel")
+    let locationSearchManager = SearchManager()
 
-    private let locationSearchManager = SearchManager()
-
-    private let managedObjectContext: NSManagedObjectContext
+    let managedObjectContext: NSManagedObjectContext
 
     var results: [SearchItemTableViewCellViewModel] = []
 
@@ -49,17 +47,15 @@ class SearchViewModel {
     }
 
     func didSelect(at indexPath: IndexPath, completion: @escaping (Result<Void, Error>) -> Void) {
-        self.queue.async {
-            let viewModel = self.results[indexPath.row]
-
-            let location = Location(context: self.managedObjectContext)
-            location.title = viewModel.location.title
-            location.subtitle = viewModel.location.subtitle
-            location.latitude = viewModel.location.latitude as NSNumber
-            location.longitude = viewModel.location.longitude as NSNumber
-            location.createdAt = Date()
-
-            completion(Result { try self.managedObjectContext.save() })
-        }
+        let viewModel = self.results[indexPath.row]
+        
+        let location = Location(context: self.managedObjectContext)
+        location.title = viewModel.location.title
+        location.subtitle = viewModel.location.subtitle
+        location.latitude = viewModel.location.latitude as NSNumber
+        location.longitude = viewModel.location.longitude as NSNumber
+        location.createdAt = Date()
+        
+        completion(Result { try self.managedObjectContext.save() })
     }
 }

@@ -1,5 +1,5 @@
 //
-//  MainFooterView.swift
+//  MainToolBar.swift
 //  Weather
 //
 //  Created by 진재명 on 8/14/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainFooterView: UIView {
+class MainToolBar: UIView {
     weak var pageControl: UIPageControl!
 
     weak var settingsButton: UIButton!
@@ -20,22 +20,7 @@ class MainFooterView: UIView {
 
         self.backgroundColor = UIColor(named: "GRAY0")
 
-        let pageControl = UIPageControl()
-        self.pageControl = pageControl
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
-        pageControl.currentPage = 1
-        pageControl.numberOfPages = 10
-        pageControl.currentPageIndicatorTintColor = UIColor(named: "GRAY6")
-        pageControl.pageIndicatorTintColor = UIColor(named: "GRAY3")
-
-        self.addSubview(pageControl)
-
-        NSLayoutConstraint.activate([
-            pageControl.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
-            pageControl.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
-        ])
-
-        let settingsButton = UIButton(type: .system)
+        let settingsButton = UIButton(type: .custom)
         self.settingsButton = settingsButton
         settingsButton.translatesAutoresizingMaskIntoConstraints = false
         settingsButton.setImage(UIImage(named: "cog"), for: .normal)
@@ -48,7 +33,7 @@ class MainFooterView: UIView {
             settingsButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
         ])
 
-        let locationButton = UIButton(type: .system)
+        let locationButton = UIButton(type: .custom)
         self.locationButton = locationButton
         locationButton.translatesAutoresizingMaskIntoConstraints = false
         locationButton.setImage(UIImage(named: "list-ul-solid"), for: .normal)
@@ -59,6 +44,21 @@ class MainFooterView: UIView {
         NSLayoutConstraint.activate([
             self.layoutMarginsGuide.trailingAnchor.constraint(equalTo: locationButton.trailingAnchor, constant: 4.0),
             locationButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
+        ])
+
+        let pageControl = UIPageControl()
+        self.pageControl = pageControl
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.currentPageIndicatorTintColor = UIColor(named: "GRAY6")
+        pageControl.pageIndicatorTintColor = UIColor(named: "GRAY3")
+        pageControl.setContentHuggingPriority(.defaultLow - 1, for: .horizontal)
+
+        self.addSubview(pageControl)
+
+        NSLayoutConstraint.activate([
+            pageControl.leadingAnchor.constraint(equalTo: settingsButton.trailingAnchor, constant: 8),
+            pageControl.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
+            locationButton.leadingAnchor.constraint(equalTo: pageControl.trailingAnchor, constant: 8),
         ])
     }
 
@@ -72,14 +72,11 @@ class MainFooterView: UIView {
         let context: CGContext! = UIGraphicsGetCurrentContext()
         assert(context != nil)
 
-        context.move(to: CGPoint(x: rect.minX, y: rect.minY))
-        context.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        let color: UIColor! = UIColor(named: "GRAY3")
+        assert(color != nil)
+        context.setStrokeColor(color.cgColor)
+
         context.setLineWidth(1.0)
-
-        let gray3: UIColor! = UIColor(named: "GRAY3")
-        assert(gray3 != nil)
-        context.setStrokeColor(gray3.cgColor)
-
-        context.strokePath()
+        context.strokeLineSegments(between: [CGPoint(x: rect.minX, y: rect.minY), CGPoint(x: rect.maxX, y: rect.minY)])
     }
 }

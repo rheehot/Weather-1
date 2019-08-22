@@ -152,7 +152,7 @@ class YahooWeatherAPI: NSObject {
     }
 }
 
-private func rfc3986Encoded(key: String, value: String) -> String {
+func rfc3986Encoded(key: String, value: String) -> String {
     let key = key.addingPercentEncoding(withAllowedCharacters: .rfc3986)
     assert(key != nil)
 

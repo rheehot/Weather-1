@@ -31,7 +31,7 @@ class LocationFooterView: UIView {
             self.layoutMarginsGuide.bottomAnchor.constraint(equalTo: versionLabel.bottomAnchor),
         ])
 
-        let addButton = UIButton(type: .system)
+        let addButton = UIButton(type: .custom)
         self.addButton = addButton
         addButton.translatesAutoresizingMaskIntoConstraints = false
         addButton.setImage(UIImage(named: "plus"), for: .normal)
@@ -44,7 +44,7 @@ class LocationFooterView: UIView {
             addButton.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
         ])
 
-        let temperatureUnitButton = UIButton(type: .system)
+        let temperatureUnitButton = UIButton(type: .custom)
         self.temperatureUnitButton = temperatureUnitButton
         temperatureUnitButton.translatesAutoresizingMaskIntoConstraints = false
         temperatureUnitButton.setImage(UIImage(named: "temperature"), for: .normal)

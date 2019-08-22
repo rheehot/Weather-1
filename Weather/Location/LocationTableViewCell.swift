@@ -16,29 +16,26 @@ class LocationTableViewCell: UITableViewCell {
     weak var temperatureLabel: UILabel!
 
     weak var updatedAtLabel: UILabel!
-    
+
     func temperatureText(value: Double) -> String {
-        guard let unit = Temperature(rawValue: UserDefaults.standard.integer(forKey: Temperature.userDefaultsKey))?.unit else {
-            fatalError()
-        }
-        
+        let unit: UnitTemperature! = Temperature(rawValue: UserDefaults.standard.integer(forKey: Temperature.userDefaultsKey))?.unit
+        assert(unit != nil)
+
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 1
-        
-        guard let value = formatter.string(from: unit.converter.value(fromBaseUnitValue: value) as NSNumber) else {
-            fatalError()
-        }
-        
-        return "\(value) \(unit.symbol)"
+
+        let value: String! = formatter.string(from: unit.converter.value(fromBaseUnitValue: value) as NSNumber)
+        assert(value != nil)
+
+        return "\(value!) \(unit.symbol)"
     }
 
     var viewModel: LocationTableViewCellViewModel? {
         didSet {
             if let weather = self.viewModel?.location.weather {
                 self.updatedAtLabel.text = {
-                    guard let updatedAt = weather.location?.updatedAt else {
-                        fatalError()
-                    }
+                    let updatedAt: Date! = weather.location?.updatedAt
+                    assert(updatedAt != nil)
 
                     let formatter = DateFormatter()
                     formatter.dateStyle = .short
@@ -48,10 +45,10 @@ class LocationTableViewCell: UITableViewCell {
 
                 self.titleLabel.text = weather.city
                 self.subtitleLabel.text = weather.text
-                
-                guard let value = weather.temperature?.doubleValue else {
-                    fatalError()
-                }
+
+                let value: Double! = weather.temperature?.doubleValue
+                assert(value != nil)
+
                 self.temperatureLabel.text = self.temperatureText(value: value)
             } else {
                 self.updatedAtLabel.text = "없음"
@@ -109,14 +106,14 @@ class LocationTableViewCell: UITableViewCell {
         }
 
         NSLayoutConstraint.activate(constraints)
-        
+
         UserDefaults.standard.addObserver(self, forKeyPath: Temperature.userDefaultsKey, options: [.new], context: self.temperatureContext)
     }
 
     required init?(coder _: NSCoder) {
         fatalError()
     }
-    
+
     let temperatureContext = UnsafeMutableRawPointer.allocate(byteCount: 0, alignment: 0)
 
     override func prepareForReuse() {
@@ -127,8 +124,8 @@ class LocationTableViewCell: UITableViewCell {
         self.subtitleLabel.text = nil
         self.temperatureLabel.text = nil
     }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         switch context {
         case self.temperatureContext:
             guard let value = self.viewModel?.location.weather?.temperature?.doubleValue else {
@@ -139,7 +136,7 @@ class LocationTableViewCell: UITableViewCell {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-    
+
     deinit {
         UserDefaults.standard.removeObserver(self, forKeyPath: Temperature.userDefaultsKey)
         self.temperatureContext.deallocate()
